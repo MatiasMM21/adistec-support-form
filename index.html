@@ -1574,11 +1574,16 @@
                 const priority = document.querySelector(`[name="prioridad_${prefix}"]`)?.value;
                 const country = document.querySelector(`[name="pais_${prefix}"]`)?.value || '';
                 
+                // Validar que el email no esté vacío
+                if (!requesterEmail || !requesterEmail.includes('@')) {
+                    throw new Error('El campo "Solicitante" debe contener un email válido');
+                }
+                
                 return {
                     email: requesterEmail,
                     phone: phone,
                     subject: subject,
-                    description: `${description}\n\n---\nPaís: ${country}\nTeléfono: ${phone}`,
+                    description: `${description}\n\n---\nInformación adicional:\nPaís: ${country}\nTeléfono: ${phone}`,
                     priority: getPriorityValue(priority)
                 };
             };
@@ -1662,9 +1667,11 @@
             return ticketData;
         }
         
+
         // Función para enviar ticket a Freshservice
         async function submitToFreshservice(ticketData) {
-            console.log('📤 Enviando ticket a Freshservice...', ticketData);
+            console.log('📤 Enviando ticket a Freshservice...');
+            console.log('📋 Datos completos:', JSON.stringify(ticketData, null, 2));
             
             try {
                 const response = await fetch(FRESHSERVICE_CONFIG.endpoint, {
@@ -1677,12 +1684,15 @@
                 });
                 
                 const result = await response.json();
+                console.log('📬 Respuesta completa:', result);
+                console.log('📊 Status:', response.status);
                 
                 if (response.ok) {
                     console.log('✅ Ticket creado exitosamente:', result);
                     return { success: true, ticket: result };
                 } else {
                     console.error('❌ Error al crear ticket:', result);
+                    console.error('❌ Detalles del error:', JSON.stringify(result, null, 2));
                     return { success: false, error: result };
                 }
             } catch (error) {
@@ -1718,11 +1728,13 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span>⏳ Enviando...</span>';
             
-            // Recopilar datos del formulario
-            const ticketData = collectFormData();
-            
-            // Enviar a Freshservice
-            const result = await submitToFreshservice(ticketData);
+            try {
+                // Recopilar datos del formulario
+                const ticketData = collectFormData();
+                console.log('✅ Datos recopilados correctamente');
+                
+                // Enviar a Freshservice
+                const result = await submitToFreshservice(ticketData);
             
             if (result.success) {
                 const ticketId = result.ticket.id;
@@ -1737,6 +1749,14 @@
                     errorMsg += '\n\nDetalle: ' + JSON.stringify(result.error.errors);
                 }
                 alert(errorMsg);
+                
+                // Rehabilitar botón
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span data-i18n="form.submit">Submit Support Request</span>';
+            }
+            } catch (error) {
+                console.error('❌ Error al procesar formulario:', error);
+                alert('❌ Error: ' + error.message);
                 
                 // Rehabilitar botón
                 submitBtn.disabled = false;
