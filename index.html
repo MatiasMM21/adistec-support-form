@@ -1,1 +1,1660 @@
-$(cat /tmp/github_upload.txt)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adistec Technical Support</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1E6FCC 0%, #144A8C 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* HEADER CON LOGO */
+        .header {
+            background: white;
+            padding: 25px 40px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            height: 50px;
+            width: auto;
+        }
+        
+        .header-content {
+            flex: 1;
+        }
+        
+        .header-title {
+            font-size: 28px;
+            color: #1E6FCC;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header-subtitle {
+            font-size: 15px;
+            color: #666;
+        }
+        
+        /* FORM CARD */
+        .form-card {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section.hidden {
+            display: none;
+        }
+        
+        .form-label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+        
+        .optional {
+            color: #999;
+            font-size: 13px;
+            font-weight: 400;
+            margin-left: 5px;
+        }
+        
+        .form-select,
+        .form-input,
+        .form-textarea,
+        .form-file {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-file:focus {
+            outline: none;
+            border-color: #1E6FCC;
+            box-shadow: 0 0 0 4px rgba(30, 111, 204, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-file {
+            padding: 12px;
+            cursor: pointer;
+            background: #f8f9fa;
+        }
+        
+        .form-file:hover {
+            background: #e9ecef;
+        }
+        
+        .form-select {
+            cursor: pointer;
+            background: white;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231E6FCC' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 45px;
+        }
+        
+        /* Radio buttons */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .radio-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #1E6FCC;
+        }
+        
+        .radio-item label {
+            font-size: 15px;
+            color: #333;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* Progress logo - sin círculo, solo el logo - DEBE IR PRIMERO */
+        .service-icon-img.progress-logo {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            width: auto !important;
+            height: 60px !important;
+            object-fit: contain;
+            background: transparent !important;
+        }
+        
+        /* SERVICE ICONS - General para los demás */
+        .service-icon-img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-title {
+            color: #1E6FCC;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .service-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .form-fields {
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1E6FCC, #144A8C);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(30, 111, 204, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 111, 204, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .field-hint {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #E8F2FF;
+            color: #1E6FCC;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #1E6FCC, transparent);
+            margin: 30px 0;
+        }
+        
+        .info-box {
+            background: #E8F2FF;
+            border-left: 4px solid #1E6FCC;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #144A8C;
+        }
+        
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .sub-select-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px dashed #1E6FCC;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .file-upload-section {
+            background: #FFF9E6;
+            border: 2px dashed #F4AF1A;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .file-upload-section .form-label {
+            color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+            .form-card {
+                padding: 25px;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .logo {
+                height: 40px;
+            }
+            
+            .header-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LANGUAGE SELECTOR -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; padding: 10px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <select id="languageSelector" onchange="changeLanguage(this.value)" style="padding: 8px 12px; border-radius: 8px; border: 2px solid #1E6FCC; background: white; font-weight: 600; cursor: pointer; font-size: 14px;">
+            <option value="es">🇪🇸 Español</option>
+            <option value="en">🇺🇸 English</option>
+            <option value="pt">🇧🇷 Português</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <!-- HEADER WITH LOGO -->
+        <div class="header">
+            <img src="images/logo_ats_total_blanco.svg" alt="Adistec Logo" class="logo" id="adistecLogo">
+            <div class="header-content">
+                <div class="header-title" data-i18n="header.title">Technical Support</div>
+                <div class="header-subtitle" data-i18n="header.subtitle">Select the type of service and complete the specialized form</div>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="form-card">
+            <form id="supportForm" enctype="multipart/form-data">
+                
+                <!-- SERVICE SELECTION -->
+                <div class="form-section">
+                    <label class="form-label">
+                        <span data-i18n="form.serviceType">Service Type</span>
+                        <span class="required">*</span>
+                    </label>
+                    <select id="serviceType" class="form-select" required>
+                        <option value="">-- Select a service --</option>
+                        <option value="progress">Progress</option>
+                        <option value="ais">Adistec Integrated Solutions (AIS)</option>
+                        <option value="aec">Adistec Enterprise Cloud (AEC)</option>
+                        <option value="awlc">Adistec White Label Cloud (AWLC)</option>
+                        <option value="labs">Adistec Labs</option>
+                        <option value="education">Adistec Education</option>
+                    </select>
+                </div>
+
+                <!-- AIS LEVEL 1: Program -->
+                <div id="ais-sub-select" class="form-section hidden">
+                    <img src="images/AIS.png" alt="AIS" class="service-icon-img">
+                    <h2 class="service-title">Adistec Integrated Solutions (AIS)</h2>
+                    <p class="service-description">Adistec Integrated Solutions® is the support program oriented to provide assistance and technical support to customers who purchase solutions as Adistec vSAN Ready Node, Adistec Data Protection Appliance or AEC POD.</p>
+                    
+                    <div class="sub-select-section">
+                        <label class="form-label">
+                            Select program
+                            <span class="required">*</span>
+                        </label>
+                        <select id="aisProgram" class="form-select">
+                            <option value="">-- Select program --</option>
+                            <option value="vrn">vSAN Ready Node Appliance Support Program (VRN)</option>
+                            <option value="dpa">Data Protection Appliance Support Program (DPA)</option>
+                            <option value="bto">Build To Order</option>
+                            <option value="nutanix">Nutanix Support Program</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- AIS LEVEL 2: Manufacturer -->
+                <div id="ais-manufacturer-select" class="form-section hidden">
+                    <div class="sub-select-section">
+                        <label class="form-label">
+                            Select manufacturer
+                            <span class="required">*</span>
+                        </label>
+                        <select id="aisSubType" class="form-select">
+                            <option value="">-- Select manufacturer --</option>
+                            <option value="intel">Intel</option>
+                            <option value="supermicro">SuperMicro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- AWLC SUB-SELECTION -->
+                <div id="awlc-sub-select" class="form-section hidden">
+                    <img src="images/WhiteLabel.png" alt="AWLC" class="service-icon-img">
+                    <h2 class="service-title">Adistec White Label Cloud (AWLC)</h2>
+                    <p class="service-description">Adistec White Label Cloud® is the support program aimed at providing assistance and technical support to clients who acquire Service Provider licensing.</p>
+                    
+                    <div class="sub-select-section">
+                        <label class="form-label">
+                            Select platform
+                            <span class="required">*</span>
+                        </label>
+                        <select id="awlcSubType" class="form-select">
+                            <option value="">-- Select platform --</option>
+                            <option value="vmware">VMware by Broadcom</option>
+                            <option value="veeam">Veeam</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- PROGRESS FORM -->
+                <div id="form-progress" class="form-section hidden">
+                    <img src="images/Progress.png" alt="Progress" class="service-icon-img progress-logo">
+                    <h2 class="service-title">Progress</h2>
+                    <span class="badge">3 required fields</span>
+                    <p class="service-description">Adistec, as a regional Progress® distributor, provides direct support for the OpenEdge solution through its dedicated team for its customers. In case you require support, please complete the form with your details.</p>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_progress" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_progress" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_progress" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Serial Number
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="numero_serie_progress" placeholder="e.g., PROG-2024-12345">
+                            <div class="field-hint">Progress product serial number</div>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="subject_progress" placeholder="Brief summary of the issue">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="description_progress" placeholder="Describe the problem in detail, steps to reproduce, and expected behavior..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_progress" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_progress" multiple>
+                            <div class="field-hint">You can attach screenshots, logs, or relevant documents (max 10MB per file)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AIS INTEL FORM -->
+                <div id="form-ais-intel" class="form-section hidden">
+                    <span class="badge">5 required fields</span>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_intel" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_intel" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_intel" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Requester Name
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="nombre_solicitante_intel" placeholder="Full name">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Serial Number
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="numero_serie_intel" placeholder="e.g., INTEL-ABC123456">
+                            <div class="field-hint">Intel equipment serial number</div>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label">
+                                First Aid Kit (FAK)
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 2px solid #ddd;">
+                                <input type="checkbox" id="fak_intel" name="fak_intel" style="width: 20px; height: 20px; cursor: pointer; accent-color: #1E6FCC;">
+                                <label for="fak_intel" style="cursor: pointer; margin: 0; font-weight: 500;">Include First Aid Kit (FAK) service</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                MotherBoard
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="motherboard_intel" placeholder="Motherboard model">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="case_subject_intel" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_intel" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_intel" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_intel" multiple>
+                            <div class="field-hint">You can attach screenshots, logs, or relevant documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AIS SUPERMICRO FORM -->
+                <div id="form-ais-supermicro" class="form-section hidden">
+                    <span class="badge">4 required fields</span>
+                    
+                    <div class="info-box">
+                        <strong>ℹ️ Note:</strong>
+                        This form does NOT require MotherBoard information (difference with Intel)
+                    </div>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Requester Name
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="nombre_solicitante_supermicro" placeholder="Full name" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_supermicro" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_supermicro" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Serial Number
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="numero_serie_supermicro" placeholder="e.g., SM-XYZ789012">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="case_subject_supermicro" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_supermicro" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_supermicro" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_supermicro" multiple>
+                            <div class="field-hint">You can attach screenshots, logs, or relevant documents</div>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label">
+                                First Aid Kit (FAK)
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8f9fa; border-radius: 8px; border: 2px solid #ddd;">
+                                <input type="checkbox" id="fak_supermicro" name="fak_supermicro" style="width: 20px; height: 20px; cursor: pointer; accent-color: #1E6FCC;">
+                                <label for="fak_supermicro" style="cursor: pointer; margin: 0; font-weight: 500;">Include First Aid Kit (FAK) service</label>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!-- AEC FORM -->
+                <div id="form-aec" class="form-section hidden">
+                    <img src="images/AEC.png" alt="AEC" class="service-icon-img">
+                    <h2 class="service-title">Adistec Enterprise Cloud (AEC)</h2>
+                    <span class="badge">5 required fields</span>
+                    <p class="service-description">Adistec Enterprise Cloud® is the support program oriented to provide assistance and technical support to customers who purchase solutions as Adistec vSAN Ready Node, Adistec Data POD.</p>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_aec" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_aec" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_aec" required>
+                                <option value="-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Subject Case
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="subject_aec" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Partner (Integrator)
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="partner_integrador_aec" placeholder="Partner integrator name">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Service ID Number
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="service_id_aec" placeholder="e.g., AEC-2024-001">
+                            <div class="field-hint">Contracted service ID</div>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                AEC Service Acquired
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="aec_service_adquirido">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_aec" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_aec" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_aec" multiple>
+                            <div class="field-hint">You can attach screenshots, logs, or relevant documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AWLC VEEAM FORM -->
+                <div id="form-awlc-veeam" class="form-section hidden">
+                    <span class="badge">3 required fields</span>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_veeam" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_veeam" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_veeam" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Support ID
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="soporte_id_veeam" placeholder="e.g., VEEAM-2024-456">
+                            <div class="field-hint">Support case reference ID</div>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="case_subject_veeam" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_veeam" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_veeam" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_veeam" multiple>
+                            <div class="field-hint">You can attach screenshots, logs, or relevant documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AWLC VMWARE FORM -->
+                <div id="form-awlc-vmware" class="form-section hidden">
+                    <span class="badge">2 required fields</span>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_vmware" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_vmware" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_vmware" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="case_subject_vmware" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_vmware" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_vmware" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_vmware" multiple>
+                            <div class="field-hint">You can attach screenshots, logs, or relevant documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LABS FORM -->
+                <div id="form-labs" class="form-section hidden">
+                    <img src="images/Labs.png" alt="Labs" class="service-icon-img">
+                    <h2 class="service-title">Adistec Labs</h2>
+                    <span class="badge">4 required fields</span>
+                    <p class="service-description">Adistec Labs® is the support program oriented to provide assistance and technical support to customers who purchase solutions as Adistec vSAN Ready Node, Adistec Data Protection Appliance or AEC POD.</p>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_labs" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_labs" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_labs" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Problem Type
+                                <span class="required">*</span>
+                            </label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="problema-individual" name="tipo_problema_labs" value="individual" required>
+                                    <label for="problema-individual">Individual Problem (affects a specific user)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="problema-general" name="tipo_problema_labs" value="general" required>
+                                    <label for="problema-general">General Problem (affects multiple users or the complete service)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- vPOD SECTION WITH CASCADE -->
+                        <div class="form-section">
+                            <label class="form-label">
+                                vPod Affected
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <select class="form-select" id="vpodScope" name="vpod_scope_labs">
+                                <option value="">-- No aplica --</option>
+                                <option value="one">Un vPod</option>
+                                <option value="multiple">Varios vPods</option>
+                                <option value="all">Todos los vPods</option>
+                            </select>
+                        </div>
+
+                        <!-- Campo de texto condicional para vPOD -->
+                        <div class="form-section hidden" id="vpodDetailSection">
+                            <label class="form-label">
+                                <span id="vpodDetailLabel">Nombre del vPod</span>
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" id="vpodDetailInput" name="vpod_detail_labs" placeholder="Ingrese el/los vPod(s) afectado(s)">
+                            <div class="field-hint" id="vpodHint">Ejemplo: vPod-12345</div>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Credentials
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <textarea class="form-textarea" name="credenciales_labs" placeholder="Username and access credentials needed to replicate the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="case_subject_labs" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_labs" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_labs" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_labs" multiple>
+                            <div class="field-hint">Screenshots, logs, configurations, or other relevant documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDUCATION FORM -->
+                <div id="form-education" class="form-section hidden">
+                    <img src="images/Education.png" alt="Education" class="service-icon-img">
+                    <h2 class="service-title">Adistec Education</h2>
+                    <span class="badge">2 required fields</span>
+                    <p class="service-description">Adistec Education® is the support program oriented to provide assistance and technical support to customers who purchase solutions as Adistec vSAN Ready Node, Adistec Data Protection Appliance or AEC POD.</p>
+                    
+                    <div class="form-fields">
+                        <div class="form-section">
+                            <label class="form-label">
+                                Solicitante
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="solicitante_education" placeholder="Nombre completo" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Número Contacto
+                                <span class="required">*</span>
+                            </label>
+                            <input type="tel" class="form-input" name="numero_contacto_education" placeholder="+56 9 1234 5678" required>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                País
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="pais_education" required>
+                                <option value="">-- Seleccione un país --</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Brasil">Brasil</option>
+                                <option value="Chile">Chile</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="México">México</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Panamá">Panamá</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Perú">Perú</option>
+                                <option value="República Dominicana">República Dominicana</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Estados Unidos">Estados Unidos</option>
+                                <option value="España">España</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Vendor
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="vendor_education" required>
+                                <option value="">-- Seleccione un vendor --</option>
+                                <option value="Nutanix">Nutanix</option>
+                                <option value="Veeam">Veeam</option>
+                                <option value="VMware">VMware</option>
+                                <option value="Fortinet">Fortinet</option>
+                                <option value="AWS">AWS</option>
+                                <option value="Veritas">Veritas</option>
+                                <option value="Forcepoint">Forcepoint</option>
+                                <option value="Omnissa">Omnissa</option>
+                            </select>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Subject
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-input" name="case_subject_education" placeholder="Case subject">
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Case Description
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea" name="case_description_education" placeholder="Detailed description of the problem..."></textarea>
+                        </div>
+
+                        <div class="form-section">
+                            <label class="form-label">
+                                Prioridad
+                                <span class="required">*</span>
+                            </label>
+                            <select class="form-select" name="prioridad_education" required>
+                                <option value="">-- Seleccione prioridad --</option>
+                                <option value="Baja">Baja</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Crítica">Crítica</option>
+                            </select>
+                        </div>
+
+                        <div class="file-upload-section">
+                            <label class="form-label">
+                                📎 Attach Files
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="file" class="form-file" name="attachments_education" multiple>
+                            <div class="field-hint">You can attach course materials, screenshots, or relevant documents</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                    <span data-i18n="form.submit">Submit Support Request</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Main elements
+        const serviceTypeSelect = document.getElementById('serviceType');
+        const aisSubSelect = document.getElementById('ais-sub-select');
+        const aisProgramSelect = document.getElementById('aisProgram');
+        const aisManufacturerSelect = document.getElementById('ais-manufacturer-select');
+        const aisSubTypeSelect = document.getElementById('aisSubType');
+        const awlcSubSelect = document.getElementById('awlc-sub-select');
+        const awlcSubTypeSelect = document.getElementById('awlcSubType');
+        const submitBtn = document.getElementById('submitBtn');
+        const allForms = document.querySelectorAll('[id^="form-"]');
+        
+        // Hide all forms
+        function hideAllForms() {
+            allForms.forEach(form => {
+                form.classList.add('hidden');
+                const inputs = form.querySelectorAll('input, textarea, select');
+                inputs.forEach(input => {
+                    input.required = false;
+                });
+            });
+        }
+        
+        // Hide sub-selects
+        function hideSubSelects() {
+            aisSubSelect.classList.add('hidden');
+            aisManufacturerSelect.classList.add('hidden');
+            awlcSubSelect.classList.add('hidden');
+            aisProgramSelect.value = '';
+            aisSubTypeSelect.value = '';
+            awlcSubTypeSelect.value = '';
+            aisProgramSelect.required = false;
+            aisSubTypeSelect.required = false;
+            awlcSubTypeSelect.required = false;
+        }
+        
+        // Show specific form
+        function showForm(formId) {
+            console.log('🎯 showForm called with:', formId);
+            hideAllForms();
+            
+            if (formId) {
+                const formToShow = document.getElementById(`form-${formId}`);
+                console.log('🔎 Looking for element:', `form-${formId}`, 'Found:', formToShow);
+                if (formToShow) {
+                    formToShow.classList.remove('hidden');
+                    const inputs = formToShow.querySelectorAll('input:not([type="file"]):not([name*="vpod"]):not([name*="credenciales"]):not([name*="attachments"]), textarea:not([name*="credenciales"]), select');
+                    inputs.forEach(input => {
+                        if (input.hasAttribute('name')) {
+                            input.required = true;
+                        }
+                    });
+                    
+                    submitBtn.disabled = false;
+                    
+                    setTimeout(() => {
+                        formToShow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+        
+        // Event listener for main service
+        serviceTypeSelect.addEventListener('change', function() {
+            console.log('🔍 Service changed to:', this.value);
+            hideAllForms();
+            hideSubSelects();
+            submitBtn.disabled = true;
+            
+            const value = this.value;
+            console.log('📋 Checking value:', value);
+            
+            if (value === 'ais') {
+                aisSubSelect.classList.remove('hidden');
+                aisProgramSelect.required = true;
+                setTimeout(() => {
+                    aisSubSelect.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            } else if (value === 'awlc') {
+                awlcSubSelect.classList.remove('hidden');
+                awlcSubTypeSelect.required = true;
+                setTimeout(() => {
+                    awlcSubSelect.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            } else if (value) {
+                console.log('✅ Calling showForm with:', value);
+                showForm(value);
+            } else {
+                console.log('⚠️  No value selected');
+            }
+        });
+        
+        // Event listener for AIS program (LEVEL 1)
+        aisProgramSelect.addEventListener('change', function() {
+            aisManufacturerSelect.classList.add('hidden');
+            aisSubTypeSelect.value = '';
+            hideAllForms();
+            submitBtn.disabled = true;
+            
+            if (this.value) {
+                aisManufacturerSelect.classList.remove('hidden');
+                aisSubTypeSelect.required = true;
+                setTimeout(() => {
+                    aisManufacturerSelect.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        });
+        
+        // Event listener for AIS manufacturer (LEVEL 2)
+        aisSubTypeSelect.addEventListener('change', function() {
+            const subValue = this.value;
+            if (subValue) {
+                showForm(`ais-${subValue}`);
+            } else {
+                hideAllForms();
+                submitBtn.disabled = true;
+            }
+        });
+        
+        // Event listener for AWLC
+        awlcSubTypeSelect.addEventListener('change', function() {
+            const subValue = this.value;
+            if (subValue) {
+                showForm(`awlc-${subValue}`);
+            } else {
+                hideAllForms();
+                submitBtn.disabled = true;
+            }
+        });
+        
+        
+        // Event listener for vPOD scope (Labs)
+        const vpodScope = document.getElementById('vpodScope');
+        const vpodDetailSection = document.getElementById('vpodDetailSection');
+        const vpodDetailInput = document.getElementById('vpodDetailInput');
+        const vpodDetailLabel = document.getElementById('vpodDetailLabel');
+        const vpodHint = document.getElementById('vpodHint');
+        
+        if (vpodScope) {
+            vpodScope.addEventListener('change', function() {
+                const value = this.value;
+                console.log('📦 vPOD scope changed to:', value);
+                
+                if (value === 'one') {
+                    // Un vPod - mostrar campo de texto
+                    vpodDetailSection.classList.remove('hidden');
+                    vpodDetailInput.required = true;
+                    vpodDetailLabel.textContent = 'Nombre del vPod';
+                    vpodDetailInput.placeholder = 'Ejemplo: vPod-12345';
+                    vpodHint.textContent = 'Ingrese el nombre o ID del vPod afectado';
+                } else if (value === 'multiple') {
+                    // Varios vPods - mostrar campo de texto
+                    vpodDetailSection.classList.remove('hidden');
+                    vpodDetailInput.required = true;
+                    vpodDetailLabel.textContent = 'Nombres de los vPods';
+                    vpodDetailInput.placeholder = 'Ejemplo: vPod-12345, vPod-67890, vPod-ABCDE';
+                    vpodHint.textContent = 'Ingrese los nombres separados por comas';
+                } else if (value === 'all') {
+                    // Todos los vPods - NO mostrar campo (se envía "Todos")
+                    vpodDetailSection.classList.add('hidden');
+                    vpodDetailInput.required = false;
+                    vpodDetailInput.value = 'Todos los vPods';
+                } else {
+                    // No aplica - ocultar campo
+                    vpodDetailSection.classList.add('hidden');
+                    vpodDetailInput.required = false;
+                    vpodDetailInput.value = '';
+                }
+            });
+        }
+        
+        // Event listener for submit
+        document.getElementById('supportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let serviceName = serviceTypeSelect.options[serviceTypeSelect.selectedIndex].text;
+            
+            if (serviceTypeSelect.value === 'ais') {
+                const programOption = aisProgramSelect.options[aisProgramSelect.selectedIndex].text;
+                const manufacturerOption = aisSubTypeSelect.options[aisSubTypeSelect.selectedIndex].text;
+                serviceName += ` - ${programOption} - ${manufacturerOption}`;
+            } else if (serviceTypeSelect.value === 'awlc') {
+                const subOption = awlcSubTypeSelect.options[awlcSubTypeSelect.selectedIndex].text;
+                serviceName += ` - ${subOption}`;
+            }
+            
+            // Get file information
+            const fileInputs = this.querySelectorAll('input[type="file"]');
+            let fileCount = 0;
+            fileInputs.forEach(input => {
+                if (input.files.length > 0 && !input.closest('.hidden')) {
+                    fileCount += input.files.length;
+                }
+            });
+            
+            alert(`✅ Form submitted successfully!\n\nService: ${serviceName}\nAttached files: ${fileCount}\n\nIn production, this data would be sent to Freshservice to create the ticket.`);
+        });
+        
+        // Initialize
+        hideAllForms();
+        hideSubSelects();
+        
+        // Change logo to blue version on load
+        const logo = document.getElementById('adistecLogo');
+        logo.src = 'images/logo_ats_total_blanco.svg';
+
+        // Traducciones
+const translations = {
+    es: {
+        header: {
+            title: "Soporte Técnico",
+            subtitle: "Seleccione el tipo de servicio y complete el formulario especializado"
+        },
+        form: {
+            serviceType: "Tipo de Servicio",
+            selectService: "-- Seleccione un servicio --",
+            submit: "Enviar Solicitud de Soporte",
+            required: "requerido",
+            optional: "Opcional",
+            fak: "First Aid Kit (FAK)",
+            fakLabel: "Incluir servicio First Aid Kit (FAK)"
+        }
+    },
+    en: {
+        header: {
+            title: "Technical Support",
+            subtitle: "Select the type of service and complete the specialized form"
+        },
+        form: {
+            serviceType: "Service Type",
+            selectService: "-- Select a service --",
+            submit: "Submit Support Request",
+            required: "required",
+            optional: "Optional",
+            fak: "First Aid Kit (FAK)",
+            fakLabel: "Include First Aid Kit (FAK) service"
+        }
+    },
+    pt: {
+        header: {
+            title: "Suporte Técnico",
+            subtitle: "Selecione o tipo de serviço e preencha o formulário especializado"
+        },
+        form: {
+            serviceType: "Tipo de Serviço",
+            selectService: "-- Selecione um serviço --",
+            submit: "Enviar Solicitação de Suporte",
+            required: "obrigatório",
+            optional: "Opcional",
+            fak: "First Aid Kit (FAK)",
+            fakLabel: "Incluir serviço First Aid Kit (FAK)"
+        }
+    }
+};
+
+// Función para cambiar idioma
+function changeLanguage(lang) {
+    // Guardar preferencia
+    localStorage.setItem('preferredLanguage', lang);
+    
+    // Actualizar elementos con data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const keys = key.split('.');
+        let value = translations[lang];
+        
+        keys.forEach(k => {
+            value = value?.[k];
+        });
+        
+        if (value) {
+            element.textContent = value;
+        }
+    });
+    
+    // Actualizar option del selector de servicio
+    const firstOption = document.querySelector('#serviceType option[value=""]');
+    if (firstOption) {
+        firstOption.textContent = translations[lang].form.selectService;
+    }
+}
+
+// Detectar idioma al cargar
+window.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('preferredLanguage');
+    const browserLang = navigator.language.substring(0, 2);
+    const defaultLang = savedLang || (translations[browserLang] ? browserLang : 'en');
+    
+    document.getElementById('languageSelector').value = defaultLang;
+    changeLanguage(defaultLang);
+});
+
+    </script>
+</body>
+</html>
