@@ -1762,7 +1762,19 @@ Ticket generado desde el Portal de Soporte de Adistec
                 submitBtn.innerHTML = '<span>⏳ Enviando ticket...</span>';
                 
                 // Enviar mediante formulario nativo
-                submitToFreshserviceNative(ticketData);
+                // Enviar datos al parent (página de Freshservice)
+                window.parent.postMessage({
+                    type: 'ADISTEC_FORM_SUBMIT',
+                    data: ticketData
+                }, '*');
+                
+                console.log('✅ Datos enviados al portal');
+                
+                // Mostrar mensaje
+                setTimeout(() => {
+                    alert('✅ Ticket enviado exitosamente!');
+                    window.location.reload();
+                }, 1000);
                 
             } catch (error) {
                 console.error('❌ Error:', error);
