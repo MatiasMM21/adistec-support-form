@@ -1494,147 +1494,139 @@
         });
         
         
-        // Event listener for vPOD scope (Labs)
-        const vpodScope = document.getElementById('vpodScope');
-        const vpodDetailSection = document.getElementById('vpodDetailSection');
-        const vpodDetailInput = document.getElementById('vpodDetailInput');
-        const vpodDetailLabel = document.getElementById('vpodDetailLabel');
-        const vpodHint = document.getElementById('vpodHint');
-        
-        if (vpodScope) {
-            vpodScope.addEventListener('change', function() {
-                const value = this.value;
-                console.log('📦 vPOD scope changed to:', value);
-                
-                if (value === 'one') {
-                    // Un vPod - mostrar campo de texto
-                    vpodDetailSection.classList.remove('hidden');
-                    vpodDetailInput.required = true;
-                    vpodDetailLabel.textContent = 'Nombre del vPod';
-                    vpodDetailInput.placeholder = 'Ejemplo: vPod-12345';
-                    vpodHint.textContent = 'Ingrese el nombre o ID del vPod afectado';
-                } else if (value === 'multiple') {
-                    // Varios vPods - mostrar campo de texto
-                    vpodDetailSection.classList.remove('hidden');
-                    vpodDetailInput.required = true;
-                    vpodDetailLabel.textContent = 'Nombres de los vPods';
-                    vpodDetailInput.placeholder = 'Ejemplo: vPod-12345, vPod-67890, vPod-ABCDE';
-                    vpodHint.textContent = 'Ingrese los nombres separados por comas';
-                } else if (value === 'all') {
-                    // Todos los vPods - NO mostrar campo (se envía "Todos")
-                    vpodDetailSection.classList.add('hidden');
-                    vpodDetailInput.required = false;
-                    vpodDetailInput.value = 'Todos los vPods';
-                } else {
-                    // No aplica - ocultar campo
-                    vpodDetailSection.classList.add('hidden');
-                    vpodDetailInput.required = false;
-                    vpodDetailInput.value = '';
-                }
-            });
-        }
-        
 
         // ========================================
-        // FRESHSERVICE API INTEGRATION
+        // INTEGRACIÓN CON FORMULARIO NATIVO DE FRESHSERVICE
         // ========================================
         
-        const FRESHSERVICE_CONFIG = {
-            domain: 'adistec.freshservice.com',
-            apiKey: 'Tp9HoWDrwdj374mA3bWH',
-            endpoint: 'https://adistec.freshservice.com/api/v2/tickets'
-        };
-        
-        // Convertir prioridad de texto a número
-        function getPriorityValue(prioridadText) {
-            const priorities = {
-                'Baja': 1,
-                'Media': 2,
-                'Alta': 3,
-                'Crítica': 4
-            };
-            return priorities[prioridadText] || 2;
-        }
-        
-        // Función para recopilar datos del formulario
-        function collectFormData() {
+        // Función para formatear los datos como texto
+        function formatTicketData() {
             const serviceType = serviceTypeSelect.value;
-            let ticketData = {
-                status: 2, // Open
-                priority: 2, // Medium por defecto
-                source: 2, // Portal
-            };
+            let formattedData = '';
+            let subject = '';
             
-            // Helper para campos comunes
+            // Helper para obtener datos comunes
             const getCommonData = (prefix) => {
-                const requesterEmail = document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '';
-                const phone = document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '';
-                const subject = document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '';
+                const solicitante = document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '';
+                const telefono = document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '';
+                const pais = document.querySelector(`[name="pais_${prefix}"]`)?.value || '';
+                const caseSubject = document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '';
                 const description = document.querySelector(`[name="case_description_${prefix}"]`)?.value || '';
-                const priority = document.querySelector(`[name="prioridad_${prefix}"]`)?.value;
-                const country = document.querySelector(`[name="pais_${prefix}"]`)?.value || '';
-                
-                // Validar que el email no esté vacío
-                if (!requesterEmail || !requesterEmail.includes('@')) {
-                    throw new Error('El campo "Solicitante" debe contener un email válido');
-                }
+                const prioridad = document.querySelector(`[name="prioridad_${prefix}"]`)?.value || '';
                 
                 return {
-                    email: requesterEmail,
-                    phone: phone,
-                    subject: subject,
-                    description: `${description}\n\n---\nInformación adicional:\nPaís: ${country}\nTeléfono: ${phone}`,
-                    priority: getPriorityValue(priority)
+                    solicitante,
+                    telefono,
+                    pais,
+                    caseSubject,
+                    description,
+                    prioridad
                 };
             };
             
-            // Según el tipo de servicio
+            // Según el servicio
             if (serviceType === 'progress') {
-                const common = getCommonData('progress');
-                const serialNumber = document.querySelector('[name="serial_number_progress"]')?.value || '';
-                const softwareVersion = document.querySelector('[name="software_version_progress"]')?.value || '';
+                const data = getCommonData('progress');
+                const serial = document.querySelector('[name="serial_number_progress"]')?.value || '';
+                const version = document.querySelector('[name="software_version_progress"]')?.value || '';
                 
-                ticketData = {
-                    ...ticketData,
-                    ...common,
-                    subject: '[Progress] ' + common.subject,
-                    description: common.description + `\nSerial Number: ${serialNumber}\nSoftware Version: ${softwareVersion}`
-                };
+                subject = '[Progress] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE PROGRESS ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN TÉCNICA:
+- Serial Number: ${serial}
+- Software Version: ${version}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
             } else if (serviceType === 'ais') {
                 const subType = aisSubTypeSelect.value;
-                const common = getCommonData(subType);
-                const serialNumber = document.querySelector(`[name="serial_number_${subType}"]`)?.value || '';
+                const data = getCommonData(subType);
+                const serial = document.querySelector(`[name="serial_number_${subType}"]`)?.value || '';
                 const fakChecked = document.querySelector(`[name="fak_checkbox_${subType}"]`)?.checked;
                 const fakNumber = fakChecked ? document.querySelector(`[name="fak_number_${subType}"]`)?.value : '';
                 
-                ticketData = {
-                    ...ticketData,
-                    ...common,
-                    subject: `[AIS - ${subType.toUpperCase()}] ` + common.subject,
-                    description: common.description + `\nSerial Number: ${serialNumber}` + 
-                                (fakNumber ? `\nFAK: ${fakNumber}` : '')
-                };
+                subject = `[AIS - ${subType.toUpperCase()}] ` + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE AIS - ${subType.toUpperCase()} ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN TÉCNICA:
+- Fabricante: ${subType}
+- Serial Number: ${serial}
+${fakNumber ? '- FAK Number: ' + fakNumber : ''}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
             } else if (serviceType === 'aec') {
-                const common = getCommonData('aec');
-                ticketData = {
-                    ...ticketData,
-                    ...common,
-                    subject: '[AEC] ' + common.subject
-                };
+                const data = getCommonData('aec');
+                
+                subject = '[AEC] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE AEC (ADISTEC ENTERPRISE CLOUD) ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
             } else if (serviceType === 'awlc') {
                 const subType = awlcSubTypeSelect.value;
-                const common = getCommonData(subType);
-                ticketData = {
-                    ...ticketData,
-                    ...common,
-                    subject: `[AWLC - ${subType.toUpperCase()}] ` + common.subject
-                };
+                const data = getCommonData(subType);
+                
+                subject = `[AWLC - ${subType.toUpperCase()}] ` + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE AWLC - ${subType.toUpperCase()} ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
             } else if (serviceType === 'labs') {
-                const common = getCommonData('labs');
+                const data = getCommonData('labs');
                 const vpodScope = document.getElementById('vpodScope')?.value;
                 const vpodDetail = document.getElementById('vpodDetailInput')?.value;
                 let vpodInfo = '';
@@ -1645,60 +1637,92 @@
                     vpodInfo = vpodDetail;
                 }
                 
-                ticketData = {
-                    ...ticketData,
-                    ...common,
-                    subject: '[Labs] ' + common.subject,
-                    description: common.description + (vpodInfo ? `\nvPOD: ${vpodInfo}` : '')
-                };
+                subject = '[Labs] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE LABS ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN DEL vPOD:
+${vpodInfo ? '- vPOD Afectado: ' + vpodInfo : '- No aplica'}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
             } else if (serviceType === 'education') {
-                const common = getCommonData('education');
+                const data = getCommonData('education');
                 const vendor = document.querySelector('[name="vendor_education"]')?.value || '';
                 
-                ticketData = {
-                    ...ticketData,
-                    ...common,
-                    subject: '[Education] ' + common.subject,
-                    description: common.description + `\nVendor: ${vendor}`
-                };
+                subject = '[Education] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE EDUCATION ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN DEL CURSO:
+- Vendor: ${vendor}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
             }
             
-            return ticketData;
+            return {
+                subject: subject,
+                description: formattedData,
+                email: getCommonData(serviceType === 'ais' ? aisSubTypeSelect.value : 
+                                    serviceType === 'awlc' ? awlcSubTypeSelect.value : 
+                                    serviceType).solicitante
+            };
         }
         
-
-        // Función para enviar ticket a Freshservice
-        async function submitToFreshservice(ticketData) {
-            console.log('📤 Enviando ticket a Freshservice...');
-            console.log('📋 Datos completos:', JSON.stringify(ticketData, null, 2));
+        // Función para enviar mediante el formulario nativo
+        function submitToFreshserviceNative(ticketData) {
+            console.log('📤 Enviando mediante formulario nativo de Freshservice...');
+            console.log('📋 Datos:', ticketData);
             
-            try {
-                const response = await fetch(FRESHSERVICE_CONFIG.endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Basic ' + btoa(FRESHSERVICE_CONFIG.apiKey + ':X'),
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(ticketData)
-                });
-                
-                const result = await response.json();
-                console.log('📬 Respuesta completa:', result);
-                console.log('📊 Status:', response.status);
-                
-                if (response.ok) {
-                    console.log('✅ Ticket creado exitosamente:', result);
-                    return { success: true, ticket: result };
-                } else {
-                    console.error('❌ Error al crear ticket:', result);
-                    console.error('❌ Detalles del error:', JSON.stringify(result, null, 2));
-                    return { success: false, error: result };
-                }
-            } catch (error) {
-                console.error('❌ Error de red:', error);
-                return { success: false, error: { description: error.message } };
-            }
+            // Crear un formulario oculto que se envía a Freshservice
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/support/tickets';
+            form.style.display = 'none';
+            
+            // Agregar campos
+            const fields = {
+                'helpdesk_ticket[email]': ticketData.email,
+                'helpdesk_ticket[subject]': ticketData.subject,
+                'helpdesk_ticket[description]': ticketData.description,
+                'helpdesk_ticket[priority]': '1', // Baja por defecto
+                'helpdesk_ticket[status]': '2' // Open
+            };
+            
+            Object.keys(fields).forEach(key => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                form.appendChild(input);
+            });
+            
+            document.body.appendChild(form);
+            form.submit();
         }
         
         // Event listener for submit
@@ -1724,48 +1748,31 @@
                 return;
             }
             
-            // Deshabilitar botón y mostrar loading
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>⏳ Enviando...</span>';
-            
             try {
-                // Recopilar datos del formulario
-                const ticketData = collectFormData();
-                console.log('✅ Datos recopilados correctamente');
+                // Formatear datos
+                const ticketData = formatTicketData();
                 
-                // Enviar a Freshservice
-                const result = await submitToFreshservice(ticketData);
-            
-            if (result.success) {
-                const ticketId = result.ticket.id;
-                alert(`✅ ¡Ticket creado exitosamente!\n\nNúmero de ticket: #${ticketId}\n\nRecibirás una confirmación por correo electrónico.`);
-                // Recargar página para limpiar formulario
-                window.location.reload();
-            } else {
-                let errorMsg = '❌ Error al crear el ticket. Por favor intenta de nuevo.';
-                if (result.error && result.error.description) {
-                    errorMsg += '\n\nDetalle: ' + result.error.description;
-                } else if (result.error && result.error.errors) {
-                    errorMsg += '\n\nDetalle: ' + JSON.stringify(result.error.errors);
+                if (!ticketData.email || !ticketData.email.includes('@')) {
+                    alert('⚠️ El campo "Solicitante" debe contener un email válido');
+                    return;
                 }
-                alert(errorMsg);
                 
-                // Rehabilitar botón
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span data-i18n="form.submit">Submit Support Request</span>';
-            }
+                // Mostrar loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳ Enviando ticket...</span>';
+                
+                // Enviar mediante formulario nativo
+                submitToFreshserviceNative(ticketData);
+                
             } catch (error) {
-                console.error('❌ Error al procesar formulario:', error);
+                console.error('❌ Error:', error);
                 alert('❌ Error: ' + error.message);
-                
-                // Rehabilitar botón
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<span data-i18n="form.submit">Submit Support Request</span>';
             }
         });
 
-        
-        // Initialize
+                // Initialize
         hideAllForms();
         hideSubSelects();
         
