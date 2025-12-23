@@ -1531,25 +1531,28 @@
                 const version = document.querySelector('[name="software_version_progress"]')?.value || '';
                 
                 subject = '[Progress] ' + data.caseSubject;
-                formattedData = `
-=== SOLICITUD DE SOPORTE PROGRESS ===
+                formattedData = `<h3 style="color: #1E6FCC;">📄 SOLICITUD DE SOPORTE PROGRESS</h3>
 
-INFORMACIÓN DEL SOLICITANTE:
-- Nombre: ${data.solicitante}
-- Teléfono: ${data.telefono}
-- País: ${data.pais}
+<p><strong>👤 INFORMACIÓN DEL SOLICITANTE</strong></p>
+<p>
+📧 <strong>Email:</strong> ${data.solicitante}<br>
+📱 <strong>Teléfono:</strong> ${data.telefono}<br>
+🌎 <strong>País:</strong> ${data.pais}
+</p>
 
-INFORMACIÓN TÉCNICA:
-- Serial Number: ${serial}
-- Software Version: ${version}
+<p><strong>🔧 INFORMACIÓN TÉCNICA</strong></p>
+<p>
+🔢 <strong>Serial Number:</strong> ${serial}<br>
+💿 <strong>Software Version:</strong> ${version}
+</p>
 
-PRIORIDAD: ${data.prioridad}
+<p><strong>⚡ PRIORIDAD:</strong> ${data.prioridad}</p>
 
-DESCRIPCIÓN DEL CASO:
-${data.description}
+<p><strong>📝 DESCRIPCIÓN DEL CASO:</strong></p>
+<p style="background: #f5f5f5; padding: 10px; border-left: 3px solid #1E6FCC;">${data.description.replace(/\n/g, '<br>')}</p>
 
----
-Ticket generado desde el Portal de Soporte de Adistec
+<hr>
+<p style="text-align: center; color: #666; font-size: 12px;">🎯 Ticket generado desde el Portal de Soporte de Adistec</p>
 `;
                 
             } else if (serviceType === 'ais') {
