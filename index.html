@@ -1499,65 +1499,282 @@
         // INTEGRACIÓN CON FORMULARIO NATIVO DE FRESHSERVICE
         // ========================================
         
-        // Función para generar tabla HTML según el tipo de servicio
-                // Función para generar formato con caracteres Unicode
-        function formatTicketDataHTML() {
-            const serviceType = serviceTypeSelect.value;
-            let textContent = '';
-            let subject = '';
+        // Función para formatear los datos como texto
+        // Función para generar formato con caracteres Unicode
+function formatTicketData() {
+    const serviceType = serviceTypeSelect.value;
+    let textContent = '';
+    let subject = '';
+    
+    // Helper para obtener datos comunes
+    const getCommonData = (prefix) => {
+        return {
+            solicitante: document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '',
+            telefono: document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '',
+            pais: document.querySelector(`[name="pais_${prefix}"]`)?.value || '',
+            caseSubject: document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '',
+            description: document.querySelector(`[name="case_description_${prefix}"]`)?.value || '',
+            prioridad: document.querySelector(`[name="prioridad_${prefix}"]`)?.value || 'Media'
+        };
+    };
+    
+    // PROGRESS
+    if (serviceType === 'progress') {
+        const data = getCommonData('progress');
+        const serial = document.querySelector('[name="serial_number_progress"]')?.value || '';
+        const version = document.querySelector('[name="software_version_progress"]')?.value || '';
+        
+        subject = '[Progress] ' + data.caseSubject;
+        
+        textContent = `
+╔═══════════════════════════════════════════════════════════════╗
+║  📄 SOLICITUD DE SOPORTE PROGRESS                             ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
+║  ───────────────────────────────────────────────────────      ║
+║  📧 Email:           ${data.solicitante.padEnd(37)}║
+║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
+║  🌎 País:            ${data.pais.padEnd(37)}║
+║                                                               ║
+║  🔧 INFORMACIÓN TÉCNICA                                       ║
+║  ───────────────────────────────────────────────────────      ║
+║  🔢 Serial Number:   ${serial.padEnd(37)}║
+║  💿 Software Ver:    ${version.padEnd(37)}║
+║                                                               ║
+║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
+║                                                               ║
+║  📝 DESCRIPCIÓN DEL CASO                                      ║
+║  ───────────────────────────────────────────────────────      ║
+║  ${data.description.substring(0, 59).padEnd(59)}║
+${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
+${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 Ticket generado desde el Portal de Soporte de Adistec
+`;
+    }
+    
+    // AIS (Intel o SuperMicro)
+    else if (serviceType === 'ais') {
+        const subType = aisSubTypeSelect.value;
+        const data = getCommonData(subType);
+        const serial = document.querySelector(`[name="serial_number_${subType}"]`)?.value || '';
+        const fakChecked = document.querySelector(`[name="fak_checkbox_${subType}"]`)?.checked;
+        const fakNumber = fakChecked ? document.querySelector(`[name="fak_number_${subType}"]`)?.value : '';
+        
+        subject = `[AIS - ${subType.toUpperCase()}] ` + data.caseSubject;
+        
+        textContent = `
+╔═══════════════════════════════════════════════════════════════╗
+║  💻 SOLICITUD DE SOPORTE AIS - ${subType.toUpperCase().padEnd(26)}║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
+║  ───────────────────────────────────────────────────────      ║
+║  📧 Email:           ${data.solicitante.padEnd(37)}║
+║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
+║  🌎 País:            ${data.pais.padEnd(37)}║
+║                                                               ║
+║  🔧 INFORMACIÓN TÉCNICA                                       ║
+║  ───────────────────────────────────────────────────────      ║
+║  🏭 Fabricante:      ${subType.padEnd(37)}║
+║  🔢 Serial Number:   ${serial.padEnd(37)}║
+${fakNumber ? '║  🆘 FAK Number:      ' + fakNumber.padEnd(37) + '║' : ''}
+║                                                               ║
+║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
+║                                                               ║
+║  📝 DESCRIPCIÓN DEL CASO                                      ║
+║  ───────────────────────────────────────────────────────      ║
+║  ${data.description.substring(0, 59).padEnd(59)}║
+${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
+${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 Ticket generado desde el Portal de Soporte de Adistec
+`;
+    }
+    
+    // AEC
+    else if (serviceType === 'aec') {
+        const data = getCommonData('aec');
+        subject = '[AEC] ' + data.caseSubject;
+        
+        textContent = `
+╔═══════════════════════════════════════════════════════════════╗
+║  ☁️  SOLICITUD DE SOPORTE AEC                                 ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
+║  ───────────────────────────────────────────────────────      ║
+║  📧 Email:           ${data.solicitante.padEnd(37)}║
+║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
+║  🌎 País:            ${data.pais.padEnd(37)}║
+║                                                               ║
+║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
+║                                                               ║
+║  📝 DESCRIPCIÓN DEL CASO                                      ║
+║  ───────────────────────────────────────────────────────      ║
+║  ${data.description.substring(0, 59).padEnd(59)}║
+${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
+${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 Ticket generado desde el Portal de Soporte de Adistec
+`;
+    }
+    
+    // AWLC (VMware o Veeam)
+    else if (serviceType === 'awlc') {
+        const subType = awlcSubTypeSelect.value;
+        const data = getCommonData(subType);
+        subject = `[AWLC - ${subType.toUpperCase()}] ` + data.caseSubject;
+        
+        textContent = `
+╔═══════════════════════════════════════════════════════════════╗
+║  🔄 SOLICITUD DE SOPORTE AWLC - ${subType.toUpperCase().padEnd(25)}║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
+║  ───────────────────────────────────────────────────────      ║
+║  📧 Email:           ${data.solicitante.padEnd(37)}║
+║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
+║  🌎 País:            ${data.pais.padEnd(37)}║
+║                                                               ║
+║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
+║                                                               ║
+║  📝 DESCRIPCIÓN DEL CASO                                      ║
+║  ───────────────────────────────────────────────────────      ║
+║  ${data.description.substring(0, 59).padEnd(59)}║
+${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
+${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 Ticket generado desde el Portal de Soporte de Adistec
+`;
+    }
+    
+    // LABS
+    else if (serviceType === 'labs') {
+        const data = getCommonData('labs');
+        const vpodScope = document.getElementById('vpodScope')?.value;
+        const vpodDetail = document.getElementById('vpodDetailInput')?.value;
+        let vpodInfo = vpodScope === 'all' ? 'Todos los vPods' : (vpodDetail || 'N/A');
+        
+        subject = '[Labs] ' + data.caseSubject;
+        
+        textContent = `
+╔═══════════════════════════════════════════════════════════════╗
+║  🧪 SOLICITUD DE SOPORTE LABS                                 ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
+║  ───────────────────────────────────────────────────────      ║
+║  📧 Email:           ${data.solicitante.padEnd(37)}║
+║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
+║  🌎 País:            ${data.pais.padEnd(37)}║
+║                                                               ║
+║  🖥️  INFORMACIÓN DEL vPOD                                     ║
+║  ───────────────────────────────────────────────────────      ║
+║  vPOD Afectado:      ${vpodInfo.padEnd(37)}║
+║                                                               ║
+║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
+║                                                               ║
+║  📝 DESCRIPCIÓN DEL CASO                                      ║
+║  ───────────────────────────────────────────────────────      ║
+║  ${data.description.substring(0, 59).padEnd(59)}║
+${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
+${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 Ticket generado desde el Portal de Soporte de Adistec
+`;
+    }
+    
+    // EDUCATION
+    else if (serviceType === 'education') {
+        const data = getCommonData('education');
+        const vendor = document.querySelector('[name="vendor_education"]')?.value || '';
+        
+        subject = '[Education] ' + data.caseSubject;
+        
+        textContent = `
+╔═══════════════════════════════════════════════════════════════╗
+║  🎓 SOLICITUD DE SOPORTE EDUCATION                            ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
+║  ───────────────────────────────────────────────────────      ║
+║  📧 Email:           ${data.solicitante.padEnd(37)}║
+║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
+║  🌎 País:            ${data.pais.padEnd(37)}║
+║                                                               ║
+║  📚 INFORMACIÓN DEL CURSO                                     ║
+║  ───────────────────────────────────────────────────────      ║
+║  🏢 Vendor:          ${vendor.padEnd(37)}║
+║                                                               ║
+║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
+║                                                               ║
+║  📝 DESCRIPCIÓN DEL CASO                                      ║
+║  ───────────────────────────────────────────────────────      ║
+║  ${data.description.substring(0, 59).padEnd(59)}║
+${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
+${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🎯 Ticket generado desde el Portal de Soporte de Adistec
+`;
+    }
+    
+    // Validar email
+    const firstEmail = document.querySelector('[name^="solicitante_"]')?.value || '';
+    if (!firstEmail || !firstEmail.includes('@')) {
+        throw new Error('El campo "Solicitante" debe contener un email válido');
+    }
+    
+    return {
+        subject: subject,
+        description: textContent,
+        email: firstEmail
+    };
+}
+;
             
-            // Helper para obtener datos comunes
-            const getCommonData = (prefix) => {
-                return {
-                    solicitante: document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '',
-                    telefono: document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '',
-                    pais: document.querySelector(`[name="pais_${prefix}"]`)?.value || '',
-                    caseSubject: document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '',
-                    description: document.querySelector(`[name="case_description_${prefix}"]`)?.value || '',
-                    prioridad: document.querySelector(`[name="prioridad_${prefix}"]`)?.value || 'Media'
-                };
-            };
-            
-            // PROGRESS
+            // Según el servicio
             if (serviceType === 'progress') {
                 const data = getCommonData('progress');
                 const serial = document.querySelector('[name="serial_number_progress"]')?.value || '';
                 const version = document.querySelector('[name="software_version_progress"]')?.value || '';
                 
                 subject = '[Progress] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE PROGRESS ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN TÉCNICA:
+- Serial Number: ${serial}
+- Software Version: ${version}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
-                textContent = `
-        ╔═══════════════════════════════════════════════════════════════╗
-        ║  📄 SOLICITUD DE SOPORTE PROGRESS                             ║
-        ╠═══════════════════════════════════════════════════════════════╣
-        ║                                                               ║
-        ║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  📧 Email:           ${data.solicitante.padEnd(37)}║
-        ║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
-        ║  🌎 País:            ${data.pais.padEnd(37)}║
-        ║                                                               ║
-        ║  🔧 INFORMACIÓN TÉCNICA                                       ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  🔢 Serial Number:   ${serial.padEnd(37)}║
-        ║  💿 Software Ver:    ${version.padEnd(37)}║
-        ║                                                               ║
-        ║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
-        ║                                                               ║
-        ║  📝 DESCRIPCIÓN DEL CASO                                      ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  ${data.description.substring(0, 59).padEnd(59)}║
-        ${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
-        ${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
-        ║                                                               ║
-        ╚═══════════════════════════════════════════════════════════════╝
-        
-        🎯 Ticket generado desde el Portal de Soporte de Adistec
-        `;
-            }
-            
-            // AIS (Intel o SuperMicro)
-            else if (serviceType === 'ais') {
+            } else if (serviceType === 'ais') {
                 const subType = aisSubTypeSelect.value;
                 const data = getCommonData(subType);
                 const serial = document.querySelector(`[name="serial_number_${subType}"]`)?.value || '';
@@ -1565,186 +1782,159 @@
                 const fakNumber = fakChecked ? document.querySelector(`[name="fak_number_${subType}"]`)?.value : '';
                 
                 subject = `[AIS - ${subType.toUpperCase()}] ` + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE AIS - ${subType.toUpperCase()} ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN TÉCNICA:
+- Fabricante: ${subType}
+- Serial Number: ${serial}
+${fakNumber ? '- FAK Number: ' + fakNumber : ''}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
-                textContent = `
-        ╔═══════════════════════════════════════════════════════════════╗
-        ║  💻 SOLICITUD DE SOPORTE AIS - ${subType.toUpperCase().padEnd(26)}║
-        ╠═══════════════════════════════════════════════════════════════╣
-        ║                                                               ║
-        ║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  📧 Email:           ${data.solicitante.padEnd(37)}║
-        ║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
-        ║  🌎 País:            ${data.pais.padEnd(37)}║
-        ║                                                               ║
-        ║  🔧 INFORMACIÓN TÉCNICA                                       ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  🏭 Fabricante:      ${subType.padEnd(37)}║
-        ║  🔢 Serial Number:   ${serial.padEnd(37)}║
-        ${fakNumber ? '║  🆘 FAK Number:      ' + fakNumber.padEnd(37) + '║' : ''}
-        ║                                                               ║
-        ║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
-        ║                                                               ║
-        ║  📝 DESCRIPCIÓN DEL CASO                                      ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  ${data.description.substring(0, 59).padEnd(59)}║
-        ${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
-        ${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
-        ║                                                               ║
-        ╚═══════════════════════════════════════════════════════════════╝
-        
-        🎯 Ticket generado desde el Portal de Soporte de Adistec
-        `;
-            }
-            
-            // AEC
-            else if (serviceType === 'aec') {
+            } else if (serviceType === 'aec') {
                 const data = getCommonData('aec');
-                subject = '[AEC] ' + data.caseSubject;
                 
-                textContent = `
-        ╔═══════════════════════════════════════════════════════════════╗
-        ║  ☁️  SOLICITUD DE SOPORTE AEC                                 ║
-        ╠═══════════════════════════════════════════════════════════════╣
-        ║                                                               ║
-        ║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  📧 Email:           ${data.solicitante.padEnd(37)}║
-        ║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
-        ║  🌎 País:            ${data.pais.padEnd(37)}║
-        ║                                                               ║
-        ║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
-        ║                                                               ║
-        ║  📝 DESCRIPCIÓN DEL CASO                                      ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  ${data.description.substring(0, 59).padEnd(59)}║
-        ${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
-        ${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
-        ║                                                               ║
-        ╚═══════════════════════════════════════════════════════════════╝
-        
-        🎯 Ticket generado desde el Portal de Soporte de Adistec
-        `;
-            }
-            
-            // AWLC (VMware o Veeam)
-            else if (serviceType === 'awlc') {
+                subject = '[AEC] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE AEC (ADISTEC ENTERPRISE CLOUD) ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
+                
+            } else if (serviceType === 'awlc') {
                 const subType = awlcSubTypeSelect.value;
                 const data = getCommonData(subType);
-                subject = `[AWLC - ${subType.toUpperCase()}] ` + data.caseSubject;
                 
-                textContent = `
-        ╔═══════════════════════════════════════════════════════════════╗
-        ║  🔄 SOLICITUD DE SOPORTE AWLC - ${subType.toUpperCase().padEnd(25)}║
-        ╠═══════════════════════════════════════════════════════════════╣
-        ║                                                               ║
-        ║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  📧 Email:           ${data.solicitante.padEnd(37)}║
-        ║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
-        ║  🌎 País:            ${data.pais.padEnd(37)}║
-        ║                                                               ║
-        ║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
-        ║                                                               ║
-        ║  📝 DESCRIPCIÓN DEL CASO                                      ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  ${data.description.substring(0, 59).padEnd(59)}║
-        ${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
-        ${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
-        ║                                                               ║
-        ╚═══════════════════════════════════════════════════════════════╝
-        
-        🎯 Ticket generado desde el Portal de Soporte de Adistec
-        `;
-            }
-            
-            // LABS
-            else if (serviceType === 'labs') {
+                subject = `[AWLC - ${subType.toUpperCase()}] ` + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE AWLC - ${subType.toUpperCase()} ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
+                
+            } else if (serviceType === 'labs') {
                 const data = getCommonData('labs');
                 const vpodScope = document.getElementById('vpodScope')?.value;
                 const vpodDetail = document.getElementById('vpodDetailInput')?.value;
-                let vpodInfo = vpodScope === 'all' ? 'Todos los vPods' : (vpodDetail || 'N/A');
+                let vpodInfo = '';
+                
+                if (vpodScope === 'all') {
+                    vpodInfo = 'Todos los vPods';
+                } else if (vpodScope && vpodDetail) {
+                    vpodInfo = vpodDetail;
+                }
                 
                 subject = '[Labs] ' + data.caseSubject;
+                formattedData = `
+=== SOLICITUD DE SOPORTE LABS ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN DEL vPOD:
+${vpodInfo ? '- vPOD Afectado: ' + vpodInfo : '- No aplica'}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
                 
-                textContent = `
-        ╔═══════════════════════════════════════════════════════════════╗
-        ║  🧪 SOLICITUD DE SOPORTE LABS                                 ║
-        ╠═══════════════════════════════════════════════════════════════╣
-        ║                                                               ║
-        ║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  📧 Email:           ${data.solicitante.padEnd(37)}║
-        ║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
-        ║  🌎 País:            ${data.pais.padEnd(37)}║
-        ║                                                               ║
-        ║  🖥️  INFORMACIÓN DEL vPOD                                     ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  vPOD Afectado:      ${vpodInfo.padEnd(37)}║
-        ║                                                               ║
-        ║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
-        ║                                                               ║
-        ║  📝 DESCRIPCIÓN DEL CASO                                      ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  ${data.description.substring(0, 59).padEnd(59)}║
-        ${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
-        ${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
-        ║                                                               ║
-        ╚═══════════════════════════════════════════════════════════════╝
-        
-        🎯 Ticket generado desde el Portal de Soporte de Adistec
-        `;
-            }
-            
-            // EDUCATION
-            else if (serviceType === 'education') {
+            } else if (serviceType === 'education') {
                 const data = getCommonData('education');
                 const vendor = document.querySelector('[name="vendor_education"]')?.value || '';
                 
                 subject = '[Education] ' + data.caseSubject;
-                
-                textContent = `
-        ╔═══════════════════════════════════════════════════════════════╗
-        ║  🎓 SOLICITUD DE SOPORTE EDUCATION                            ║
-        ╠═══════════════════════════════════════════════════════════════╣
-        ║                                                               ║
-        ║  👤 INFORMACIÓN DEL SOLICITANTE                               ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  📧 Email:           ${data.solicitante.padEnd(37)}║
-        ║  📱 Teléfono:        ${data.telefono.padEnd(37)}║
-        ║  🌎 País:            ${data.pais.padEnd(37)}║
-        ║                                                               ║
-        ║  📚 INFORMACIÓN DEL CURSO                                     ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  🏢 Vendor:          ${vendor.padEnd(37)}║
-        ║                                                               ║
-        ║  ⚡ PRIORIDAD: ${data.prioridad.padEnd(44)}║
-        ║                                                               ║
-        ║  📝 DESCRIPCIÓN DEL CASO                                      ║
-        ║  ───────────────────────────────────────────────────────      ║
-        ║  ${data.description.substring(0, 59).padEnd(59)}║
-        ${data.description.length > 59 ? '║  ' + data.description.substring(59, 118).padEnd(59) + '║' : ''}
-        ${data.description.length > 118 ? '║  ' + data.description.substring(118, 177).padEnd(59) + '║' : ''}
-        ║                                                               ║
-        ╚═══════════════════════════════════════════════════════════════╝
-        
-        🎯 Ticket generado desde el Portal de Soporte de Adistec
-        `;
-            }
-            
-            // Validar email
-            const firstEmail = document.querySelector('[name^="solicitante_"]')?.value || '';
-            if (!firstEmail || !firstEmail.includes('@')) {
-                throw new Error('El campo "Solicitante" debe contener un email válido');
+                formattedData = `
+=== SOLICITUD DE SOPORTE EDUCATION ===
+
+INFORMACIÓN DEL SOLICITANTE:
+- Nombre: ${data.solicitante}
+- Teléfono: ${data.telefono}
+- País: ${data.pais}
+
+INFORMACIÓN DEL CURSO:
+- Vendor: ${vendor}
+
+PRIORIDAD: ${data.prioridad}
+
+DESCRIPCIÓN DEL CASO:
+${data.description}
+
+---
+Ticket generado desde el Portal de Soporte de Adistec
+`;
             }
             
             return {
                 subject: subject,
-                description: textContent,
-                email: firstEmail
+                description: formattedData,
+                email: getCommonData(serviceType === 'ais' ? aisSubTypeSelect.value : 
+                                    serviceType === 'awlc' ? awlcSubTypeSelect.value : 
+                                    serviceType).solicitante
             };
         }
-                    
+        
+        // Función para enviar mediante el formulario nativo
+        function submitToFreshserviceNative(ticketData) {
+            console.log('📤 Enviando mediante formulario nativo de Freshservice...');
+            console.log('📋 Datos:', ticketData);
+            
+            // Crear un formulario oculto que se envía a Freshservice
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/support/tickets';
+            form.style.display = 'none';
+            
+            // Agregar campos
+            const fields = {
+                'helpdesk_ticket[email]': ticketData.email,
+                'helpdesk_ticket[subject]': ticketData.subject,
+                'helpdesk_ticket[description]': ticketData.description,
+                'helpdesk_ticket[priority]': '1', // Baja por defecto
+                'helpdesk_ticket[status]': '2' // Open
+            };
+            
             Object.keys(fields).forEach(key => {
                 const input = document.createElement('input');
                 input.type = 'hidden';
@@ -1782,7 +1972,7 @@
             
             try {
                 // Formatear datos
-                const ticketData = formatTicketDataHTML();
+                const ticketData = formatTicketData();
                 
                 if (!ticketData.email || !ticketData.email.includes('@')) {
                     alert('⚠️ El campo "Solicitante" debe contener un email válido');
