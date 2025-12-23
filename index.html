@@ -1510,7 +1510,7 @@
                 const solicitante = document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '';
                 const telefono = document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '';
                 const pais = document.querySelector(`[name="pais_${prefix}"]`)?.value || '';
-                const caseSubject = document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '';
+                const caseSubject = document.querySelector(`[name="case_subject_${prefix}"]`)?.value || document.querySelector(`[name="subject_${prefix}"]`)?.value || '';
                 const description = document.querySelector(`[name="case_description_${prefix}"]`)?.value || '';
                 const prioridad = document.querySelector(`[name="prioridad_${prefix}"]`)?.value || '';
                 
@@ -1527,32 +1527,40 @@
             // Según el servicio
             if (serviceType === 'progress') {
                 const data = getCommonData('progress');
-                const serial = document.querySelector('[name="serial_number_progress"]')?.value || '';
-                const version = document.querySelector('[name="software_version_progress"]')?.value || '';
+                const serial = document.querySelector('[name="numero_serie_progress"]')?.value || '';
+                const subject_field = document.querySelector('[name="subject_progress"]')?.value || '';
                 
                 subject = '[Progress] ' + data.caseSubject;
-                formattedData = `<h3 style="color: #1E6FCC;">📄 SOLICITUD DE SOPORTE PROGRESS</h3>
+                formattedData = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📄 SOLICITUD DE SOPORTE PROGRESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-<p><strong>👤 INFORMACIÓN DEL SOLICITANTE</strong></p>
-<p>
-📧 <strong>Email:</strong> ${data.solicitante}<br>
-📱 <strong>Teléfono:</strong> ${data.telefono}<br>
-🌎 <strong>País:</strong> ${data.pais}
-</p>
+👤 INFORMACIÓN DEL SOLICITANTE
+──────────────────────────────────────────
+📧 Email:      ${data.solicitante}
+📱 Teléfono:   ${data.telefono}
+🌎 País:       ${data.pais}
 
-<p><strong>🔧 INFORMACIÓN TÉCNICA</strong></p>
-<p>
-🔢 <strong>Serial Number:</strong> ${serial}<br>
-💿 <strong>Software Version:</strong> ${version}
-</p>
 
-<p><strong>⚡ PRIORIDAD:</strong> ${data.prioridad}</p>
+🔧 INFORMACIÓN TÉCNICA
+──────────────────────────────────────────
+🔢 Serial Number:      ${serial}
+📋 Subject:            ${subject_field}
 
-<p><strong>📝 DESCRIPCIÓN DEL CASO:</strong></p>
-<p style="background: #f5f5f5; padding: 10px; border-left: 3px solid #1E6FCC;">${data.description.replace(/\n/g, '<br>')}</p>
 
-<hr>
-<p style="text-align: center; color: #666; font-size: 12px;">🎯 Ticket generado desde el Portal de Soporte de Adistec</p>
+⚡ PRIORIDAD
+──────────────────────────────────────────
+${data.prioridad}
+
+
+📝 DESCRIPCIÓN DEL CASO
+──────────────────────────────────────────
+${data.description}
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Ticket generado desde el Portal de Soporte de Adistec
 `;
                 
             } else if (serviceType === 'ais') {
