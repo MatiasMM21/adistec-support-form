@@ -1499,306 +1499,30 @@
         // INTEGRACIÓN CON FORMULARIO NATIVO DE FRESHSERVICE
         // ========================================
         
-        // Función para generar tabla HTML según el tipo de servicio
-        function formatTicketDataHTML() {
+        // Función para formatear los datos como texto
+        function formatTicketData() {
             const serviceType = serviceTypeSelect.value;
-            let htmlContent = '';
+            let formattedData = '';
             let subject = '';
-            
-            // Estilo base de la tabla
-            const tableStyle = `
-                font-family: Arial, sans-serif; 
-                width: 100%; 
-                border-collapse: collapse; 
-                margin: 20px 0; 
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            `;
-            
-            const headerStyle = `
-                background: linear-gradient(135deg, #1E6FCC 0%, #144A8C 100%); 
-                color: white; 
-                padding: 15px; 
-                text-align: left; 
-                font-size: 18px; 
-                border: 1px solid #ddd;
-            `;
-            
-            const sectionHeaderStyle = `
-                padding: 12px 15px; 
-                font-weight: bold; 
-                border: 1px solid #ddd; 
-                background-color: #e9ecef;
-            `;
-            
-            const labelStyle = `
-                padding: 10px 15px; 
-                border: 1px solid #ddd; 
-                width: 30%; 
-                font-weight: 500;
-            `;
-            
-            const valueStyle = `
-                padding: 10px 15px; 
-                border: 1px solid #ddd;
-            `;
-            
-            const footerStyle = `
-                padding: 10px 15px; 
-                text-align: center; 
-                font-size: 12px; 
-                color: #666; 
-                border: 1px solid #ddd; 
-                background-color: #f8f9fa;
-            `;
             
             // Helper para obtener datos comunes
             const getCommonData = (prefix) => {
+                const solicitante = document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '';
+                const telefono = document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '';
+                const pais = document.querySelector(`[name="pais_${prefix}"]`)?.value || '';
+                const caseSubject = document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '';
+                const description = document.querySelector(`[name="case_description_${prefix}"]`)?.value || '';
+                const prioridad = document.querySelector(`[name="prioridad_${prefix}"]`)?.value || '';
+                
                 return {
-                    solicitante: document.querySelector(`[name="solicitante_${prefix}"]`)?.value || '',
-                    telefono: document.querySelector(`[name="numero_contacto_${prefix}"]`)?.value || '',
-                    pais: document.querySelector(`[name="pais_${prefix}"]`)?.value || '',
-                    caseSubject: document.querySelector(`[name="case_subject_${prefix}"]`)?.value || '',
-                    description: document.querySelector(`[name="case_description_${prefix}"]`)?.value || '',
-                    prioridad: document.querySelector(`[name="prioridad_${prefix}"]`)?.value || 'Media'
+                    solicitante,
+                    telefono,
+                    pais,
+                    caseSubject,
+                    description,
+                    prioridad
                 };
             };
-            
-            // PROGRESS
-            if (serviceType === 'progress') {
-                const data = getCommonData('progress');
-                const serial = document.querySelector('[name="serial_number_progress"]')?.value || '';
-                const version = document.querySelector('[name="software_version_progress"]')?.value || '';
-                
-                subject = '[Progress] ' + data.caseSubject;
-                
-                htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px;">
-          <table style="${tableStyle}">
-            <thead>
-              <tr>
-                <th colspan="2" style="${headerStyle}">📄 SOLICITUD DE SOPORTE PROGRESS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="2" style="${sectionHeaderStyle}">👤 INFORMACIÓN DEL SOLICITANTE</td></tr>
-              <tr><td style="${labelStyle}">📧 Email</td><td style="${valueStyle}">${data.solicitante}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">📱 Teléfono</td><td style="${valueStyle}">${data.telefono}</td></tr>
-              <tr><td style="${labelStyle}">🌎 País</td><td style="${valueStyle}">${data.pais}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">🔧 INFORMACIÓN TÉCNICA</td></tr>
-              <tr><td style="${labelStyle}">🔢 Serial Number</td><td style="${valueStyle}">${serial}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">💿 Software Version</td><td style="${valueStyle}">${version}</td></tr>
-              
-              <tr><td colspan="2" style="${sectionHeaderStyle}">⚡ PRIORIDAD</td></tr>
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${valueStyle}">${data.prioridad}</td></tr>
-              
-              <tr><td colspan="2" style="${sectionHeaderStyle}">📝 DESCRIPCIÓN DEL CASO</td></tr>
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="padding: 15px; border: 1px solid #ddd; white-space: pre-wrap;">${data.description}</td></tr>
-            </tbody>
-            <tfoot>
-              <tr><td colspan="2" style="${footerStyle}">🎯 Ticket generado desde el Portal de Soporte de Adistec</td></tr>
-            </tfoot>
-          </table>
-        </div>`;
-            }
-            
-            // AIS (Intel o SuperMicro)
-            else if (serviceType === 'ais') {
-                const subType = aisSubTypeSelect.value;
-                const data = getCommonData(subType);
-                const serial = document.querySelector(`[name="serial_number_${subType}"]`)?.value || '';
-                const fakChecked = document.querySelector(`[name="fak_checkbox_${subType}"]`)?.checked;
-                const fakNumber = fakChecked ? document.querySelector(`[name="fak_number_${subType}"]`)?.value : '';
-                
-                subject = `[AIS - ${subType.toUpperCase()}] ` + data.caseSubject;
-                
-                htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px;">
-          <table style="${tableStyle}">
-            <thead>
-              <tr>
-                <th colspan="2" style="${headerStyle}">💻 SOLICITUD DE SOPORTE AIS - ${subType.toUpperCase()}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="2" style="${sectionHeaderStyle}">👤 INFORMACIÓN DEL SOLICITANTE</td></tr>
-              <tr><td style="${labelStyle}">📧 Email</td><td style="${valueStyle}">${data.solicitante}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">📱 Teléfono</td><td style="${valueStyle}">${data.telefono}</td></tr>
-              <tr><td style="${labelStyle}">🌎 País</td><td style="${valueStyle}">${data.pais}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">🔧 INFORMACIÓN TÉCNICA</td></tr>
-              <tr><td style="${labelStyle}">🏭 Fabricante</td><td style="${valueStyle}">${subType}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">🔢 Serial Number</td><td style="${valueStyle}">${serial}</td></tr>
-              ${fakNumber ? `<tr><td style="${labelStyle}">🆘 FAK Number</td><td style="${valueStyle}">${fakNumber}</td></tr>` : ''}
-              
-              <tr${fakNumber ? ' style="background-color: #f8f9fa;"' : ''}><td colspan="2" style="${sectionHeaderStyle}">⚡ PRIORIDAD</td></tr>
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${valueStyle}">${data.prioridad}</td></tr>
-              
-              <tr><td colspan="2" style="${sectionHeaderStyle}">📝 DESCRIPCIÓN DEL CASO</td></tr>
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="padding: 15px; border: 1px solid #ddd; white-space: pre-wrap;">${data.description}</td></tr>
-            </tbody>
-            <tfoot>
-              <tr><td colspan="2" style="${footerStyle}">🎯 Ticket generado desde el Portal de Soporte de Adistec</td></tr>
-            </tfoot>
-          </table>
-        </div>`;
-            }
-            
-            // AEC
-            else if (serviceType === 'aec') {
-                const data = getCommonData('aec');
-                subject = '[AEC] ' + data.caseSubject;
-                
-                htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px;">
-          <table style="${tableStyle}">
-            <thead>
-              <tr>
-                <th colspan="2" style="${headerStyle}">☁️ SOLICITUD DE SOPORTE AEC</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="2" style="${sectionHeaderStyle}">👤 INFORMACIÓN DEL SOLICITANTE</td></tr>
-              <tr><td style="${labelStyle}">📧 Email</td><td style="${valueStyle}">${data.solicitante}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">📱 Teléfono</td><td style="${valueStyle}">${data.telefono}</td></tr>
-              <tr><td style="${labelStyle}">🌎 País</td><td style="${valueStyle}">${data.pais}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">⚡ PRIORIDAD</td></tr>
-              <tr><td colspan="2" style="${valueStyle}">${data.prioridad}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">📝 DESCRIPCIÓN DEL CASO</td></tr>
-              <tr><td colspan="2" style="padding: 15px; border: 1px solid #ddd; white-space: pre-wrap;">${data.description}</td></tr>
-            </tbody>
-            <tfoot>
-              <tr><td colspan="2" style="${footerStyle}">🎯 Ticket generado desde el Portal de Soporte de Adistec</td></tr>
-            </tfoot>
-          </table>
-        </div>`;
-            }
-            
-            // AWLC (VMware o Veeam)
-            else if (serviceType === 'awlc') {
-                const subType = awlcSubTypeSelect.value;
-                const data = getCommonData(subType);
-                subject = `[AWLC - ${subType.toUpperCase()}] ` + data.caseSubject;
-                
-                htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px;">
-          <table style="${tableStyle}">
-            <thead>
-              <tr>
-                <th colspan="2" style="${headerStyle}">🔄 SOLICITUD DE SOPORTE AWLC - ${subType.toUpperCase()}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="2" style="${sectionHeaderStyle}">👤 INFORMACIÓN DEL SOLICITANTE</td></tr>
-              <tr><td style="${labelStyle}">📧 Email</td><td style="${valueStyle}">${data.solicitante}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">📱 Teléfono</td><td style="${valueStyle}">${data.telefono}</td></tr>
-              <tr><td style="${labelStyle}">🌎 País</td><td style="${valueStyle}">${data.pais}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">⚡ PRIORIDAD</td></tr>
-              <tr><td colspan="2" style="${valueStyle}">${data.prioridad}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">📝 DESCRIPCIÓN DEL CASO</td></tr>
-              <tr><td colspan="2" style="padding: 15px; border: 1px solid #ddd; white-space: pre-wrap;">${data.description}</td></tr>
-            </tbody>
-            <tfoot>
-              <tr><td colspan="2" style="${footerStyle}">🎯 Ticket generado desde el Portal de Soporte de Adistec</td></tr>
-            </tfoot>
-          </table>
-        </div>`;
-            }
-            
-            // LABS
-            else if (serviceType === 'labs') {
-                const data = getCommonData('labs');
-                const vpodScope = document.getElementById('vpodScope')?.value;
-                const vpodDetail = document.getElementById('vpodDetailInput')?.value;
-                let vpodInfo = vpodScope === 'all' ? 'Todos los vPods' : (vpodDetail || 'N/A');
-                
-                subject = '[Labs] ' + data.caseSubject;
-                
-                htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px;">
-          <table style="${tableStyle}">
-            <thead>
-              <tr>
-                <th colspan="2" style="${headerStyle}">🧪 SOLICITUD DE SOPORTE LABS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="2" style="${sectionHeaderStyle}">👤 INFORMACIÓN DEL SOLICITANTE</td></tr>
-              <tr><td style="${labelStyle}">📧 Email</td><td style="${valueStyle}">${data.solicitante}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">📱 Teléfono</td><td style="${valueStyle}">${data.telefono}</td></tr>
-              <tr><td style="${labelStyle}">🌎 País</td><td style="${valueStyle}">${data.pais}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">🖥️ INFORMACIÓN DEL vPOD</td></tr>
-              <tr><td style="${labelStyle}">vPOD Afectado</td><td style="${valueStyle}">${vpodInfo}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">⚡ PRIORIDAD</td></tr>
-              <tr><td colspan="2" style="${valueStyle}">${data.prioridad}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">📝 DESCRIPCIÓN DEL CASO</td></tr>
-              <tr><td colspan="2" style="padding: 15px; border: 1px solid #ddd; white-space: pre-wrap;">${data.description}</td></tr>
-            </tbody>
-            <tfoot>
-              <tr><td colspan="2" style="${footerStyle}">🎯 Ticket generado desde el Portal de Soporte de Adistec</td></tr>
-            </tfoot>
-          </table>
-        </div>`;
-            }
-            
-            // EDUCATION
-            else if (serviceType === 'education') {
-                const data = getCommonData('education');
-                const vendor = document.querySelector('[name="vendor_education"]')?.value || '';
-                
-                subject = '[Education] ' + data.caseSubject;
-                
-                htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px;">
-          <table style="${tableStyle}">
-            <thead>
-              <tr>
-                <th colspan="2" style="${headerStyle}">🎓 SOLICITUD DE SOPORTE EDUCATION</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="2" style="${sectionHeaderStyle}">👤 INFORMACIÓN DEL SOLICITANTE</td></tr>
-              <tr><td style="${labelStyle}">📧 Email</td><td style="${valueStyle}">${data.solicitante}</td></tr>
-              <tr style="background-color: #f8f9fa;"><td style="${labelStyle}">📱 Teléfono</td><td style="${valueStyle}">${data.telefono}</td></tr>
-              <tr><td style="${labelStyle}">🌎 País</td><td style="${valueStyle}">${data.pais}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">📚 INFORMACIÓN DEL CURSO</td></tr>
-              <tr><td style="${labelStyle}">🏢 Vendor</td><td style="${valueStyle}">${vendor}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">⚡ PRIORIDAD</td></tr>
-              <tr><td colspan="2" style="${valueStyle}">${data.prioridad}</td></tr>
-              
-              <tr style="background-color: #f8f9fa;"><td colspan="2" style="${sectionHeaderStyle}">📝 DESCRIPCIÓN DEL CASO</td></tr>
-              <tr><td colspan="2" style="padding: 15px; border: 1px solid #ddd; white-space: pre-wrap;">${data.description}</td></tr>
-            </tbody>
-            <tfoot>
-              <tr><td colspan="2" style="${footerStyle}">🎯 Ticket generado desde el Portal de Soporte de Adistec</td></tr>
-            </tfoot>
-          </table>
-        </div>`;
-            }
-            
-            // Validar email
-            const firstEmail = document.querySelector('[name^="solicitante_"]')?.value || '';
-            if (!firstEmail || !firstEmail.includes('@')) {
-                throw new Error('El campo "Solicitante" debe contener un email válido');
-            }
-            
-            return {
-                subject: subject,
-                description: htmlContent,
-                email: firstEmail
-            };
-        }
-        
-   };
             
             // Según el servicio
             if (serviceType === 'progress') {
@@ -2026,7 +1750,7 @@ Ticket generado desde el Portal de Soporte de Adistec
             
             try {
                 // Formatear datos
-                const ticketData = formatTicketDataHTML();
+                const ticketData = formatTicketData();
                 
                 if (!ticketData.email || !ticketData.email.includes('@')) {
                     alert('⚠️ El campo "Solicitante" debe contener un email válido');
