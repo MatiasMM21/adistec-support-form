@@ -1530,6 +1530,13 @@
                 const serial = document.querySelector('[name="numero_serie_progress"]')?.value || '';
                 const subject_field = document.querySelector('[name="subject_progress"]')?.value || '';
                 
+                console.log('🔍 DEBUG Progress:', {
+                    serial: serial,
+                    subject_field: subject_field,
+                    solicitante: data.solicitante,
+                    description: data.description
+                });
+                
                 subject = '[Progress] ' + data.caseSubject;
                 formattedData = `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
